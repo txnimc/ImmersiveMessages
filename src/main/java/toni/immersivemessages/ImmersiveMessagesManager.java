@@ -17,14 +17,24 @@ import java.util.Queue;
 
 public class ImmersiveMessagesManager {
     private static final Queue<ImmersiveMessage> tooltipQueue = new LinkedList<>();
-    @Getter
+
     private static final ITooltipRenderer renderer = initRenderer();
+    private static final ITooltipRenderer vanillaRenderer = new VanillaRenderer();
+
+    public static ITooltipRenderer getRenderer() {
+        if (forceVanillaRenderer)
+            return vanillaRenderer;
+
+        return renderer;
+    }
 
     private static final float NANOSECONDS_PER_TICK = 1000000000.0f / 20; // 50 million ns per tick for 20 ticks per second
     private static long lastTime = System.nanoTime();
 
     private static ImmersiveMessage currentTooltip;
     private static double countdownToNextTooltip = 0f;
+
+    public static boolean forceVanillaRenderer = false;
 
     static void render(GuiGraphics graphics, #if MC == "201" float #else DeltaTracker #endif delta) {
         long currentTime = System.nanoTime();

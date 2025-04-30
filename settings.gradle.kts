@@ -1,5 +1,3 @@
-import dev.kikugie.stonecutter.StonecutterSettings
-
 pluginManagement {
 	repositories {
 		mavenCentral()
@@ -15,21 +13,20 @@ pluginManagement {
 }
 
 plugins {
-	id("dev.kikugie.stonecutter") version "0.5-alpha.4"
+	id("dev.architectury.loom") version "1.10-SNAPSHOT" apply false
+	kotlin("jvm") version "2.0.0" apply false
+	kotlin("plugin.serialization") version "2.0.0" apply false
+	id("toni.blahaj") version "2.0.17"
+	id("dev.kikugie.stonecutter") version "0.6-alpha.5"
 }
 
-extensions.configure<StonecutterSettings> {
-	kotlinController = true
-	centralScript = "build.gradle.kts"
-	shared {
-		fun mc(version: String, vararg loaders: String) {
-			for (it in loaders) vers("$version-$it", version)
-		}
-
+blahaj {
+	init(rootProject) {
 		mc("1.20.1", "fabric", "forge")
 		mc("1.21.1", "fabric", "neoforge")
+		//mc("1.21.4", "fabric")
+		//mc("1.21.5", "fabric")
 	}
-	create(rootProject)
 }
 
-rootProject.name = "ImmersiveMessages"
+rootProject.name = settings.extra["mod.name"] as String

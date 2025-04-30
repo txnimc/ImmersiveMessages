@@ -46,19 +46,28 @@ public class CaxtonRenderer implements ITooltipRenderer {
                 lineWidth = adjustLineWidthForTypewriter(tooltip, graphics, lineWidth, textLines.size() == 1 ? tooltip.getRawText() : line, renderer);
 
                 graphics.pose().pushPose();
-                AnimationUtil.applyPose(tooltip.animation, graphics, bgOffset.mul(-6, new Vector2i()), tooltip.anchor, tooltip.align, lineWidth, size.y);
-                graphics.pose().translate(0.0D, 0.0D, 0.1f);
 
-                renderer.draw(text, 0, yOffset,
-                    tooltip.animation.getColor(),
-                    tooltip.shadow,
-                    graphics.pose().last().pose(),
-                    graphics.bufferSource(),
-                    true,
-                    0,
-                    255,
-                    0,
-                    1000f);
+                if (tooltip.onPoseMessage != null) {
+                    tooltip.onPoseMessage.applyPose(tooltip, tooltip.animation, graphics, bgOffset.mul(-6, new Vector2i()), tooltip.anchor, tooltip.align, lineWidth, size.y);
+                } else {
+                    AnimationUtil.applyPose(tooltip.animation, graphics, bgOffset.mul(-6, new Vector2i()), tooltip.anchor, tooltip.align, lineWidth, size.y);
+                    graphics.pose().translate(0.0D, 0.0D, 0.1f);
+                }
+
+                if (tooltip.onRenderMessageCaxton != null) {
+                    tooltip.onRenderMessageCaxton.render(tooltip, graphics, renderer, text, yOffset);
+                } else {
+                    renderer.draw(text, 0, yOffset,
+                        tooltip.animation.getColor(),
+                        tooltip.shadow,
+                        graphics.pose().last().pose(),
+                        graphics.bufferSource(),
+                        true,
+                        0,
+                        255,
+                        0,
+                        1000f);
+                }
 
                 graphics.pose().popPose();
             }

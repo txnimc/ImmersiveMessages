@@ -35,10 +35,7 @@ import toni.lib.networking.codecs.StreamCodec;
 #endif
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -79,6 +76,10 @@ public class ImmersiveMessage {
     public ImmersiveColor colorBorderTop = new ImmersiveColor(36,1,89,255).mixWith(ImmersiveColor.WHITE, 0.1f);
     public ImmersiveColor colorBorderBot = new ImmersiveColor(25,1,53,255);
     public float rainbow = -1f;
+
+    public OnPoseMessage onPoseMessage;
+    public OnRenderMessage onRenderMessage;
+    public OnRenderMessageCaxton onRenderMessageCaxton;
 
     private ImmersiveMessage() { }
 

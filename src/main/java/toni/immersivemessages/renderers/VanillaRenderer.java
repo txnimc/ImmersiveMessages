@@ -42,22 +42,31 @@ public class VanillaRenderer implements ITooltipRenderer {
             if (line != null)
             {
                 graphics.pose().pushPose();
+
                 var lineWidth = tooltip.typewriter && !tooltip.typewriterCenterAligned ? getTypewriterWidth(graphics, tooltip, textLines.size() == 1 ? tooltip.getRawText() : line) : font.width(line);
 
-                AnimationUtil.applyPose(tooltip.animation, graphics, bgOffset.mul(-6, new Vector2i()), tooltip.anchor, tooltip.align, lineWidth, size.y);
-                Matrix4f mat = graphics.pose().last().pose();
+                if (tooltip.onPoseMessage != null) {
+                    tooltip.onPoseMessage.applyPose(tooltip, tooltip.animation, graphics, bgOffset.mul(-6, new Vector2i()), tooltip.anchor, tooltip.align, lineWidth, size.y);
+                } else {
+                    AnimationUtil.applyPose(tooltip.animation, graphics, bgOffset.mul(-6, new Vector2i()), tooltip.anchor, tooltip.align, lineWidth, size.y);
+                }
 
-                font.drawInBatch(
-                    Language.getInstance().getVisualOrder(line),
-                    0,
-                    yOffset,
-                    FastColor.ARGB32.color((int) Math.max(0, Math.min(255, fade * 255)), 255, 255, 255),
-                    true,
-                    mat,
-                    renderType,
-                    Font.DisplayMode.NORMAL,
-                    0,
-                    15728880);
+
+                if (tooltip.onRenderMessage != null) {
+                    tooltip.onRenderMessage.render(tooltip, graphics, line, yOffset);
+                } else {
+                    font.drawInBatch(
+                        Language.getInstance().getVisualOrder(line),
+                        0,
+                        yOffset,
+                        FastColor.ARGB32.color((int) Math.max(0, Math.min(255, fade * 255)), 255, 255, 255),
+                        tooltip.shadow,
+                        graphics.pose().last().pose(),
+                        renderType,
+                        Font.DisplayMode.NORMAL,
+                        0,
+                        15728880);
+                }
 
                 graphics.pose().popPose();
             }
